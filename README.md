@@ -150,7 +150,7 @@ Ver [AWS_BEDROCK_SETUP.md](AWS_BEDROCK_SETUP.md) para instrucciones detalladas s
 
 ## 📄 Licencia
 
-MIT License - Úsalo libremente
+Apache 2.0 License - Úsalo libremente
 
 ---
 
