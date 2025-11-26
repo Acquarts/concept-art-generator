@@ -79,8 +79,8 @@ Abre tu archivo `.env` y configura las credenciales:
 # ========================================
 
 # AWS (para Claude - generación de prompts creativos)
-AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
-AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+AWS_ACCESS_KEY_ID=xxxxxxxxxxxx
+AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxx
 
 # fal.ai (para FLUX - generación de imágenes)
 FAL_KEY=tu_fal_api_key_aqui
