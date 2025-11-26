@@ -34,44 +34,40 @@ def get_bedrock_client(region, aws_key, aws_secret):
         aws_secret_access_key=aws_secret
     )
 
-def generate_prompts(game_description, bedrock_client, model_id):
+def generate_prompts(game_description, bedrock_client, model_id, images_per_category):
     """Generates creative prompts with Claude via AWS Bedrock"""
-    system_prompt = """You are an expert in video game concept art.
-    Generate detailed prompts optimized for the FLUX image generation model."""
+    system_prompt = """You are an expert in video game concept art illustration.
+    Generate detailed prompts optimized for the FLUX image generation model.
+    IMPORTANT: All concept art must be in 2D illustration style, NOT 3D renders."""
 
     user_prompt = f"""Video game description: {game_description}
 
-Generate 2 specific prompts for each category (in English, optimized for FLUX):
+Generate {images_per_category} specific prompts for each category (in English, optimized for FLUX).
+Each prompt MUST specify "2D illustration", "concept art illustration", "hand-painted" or similar 2D art style:
 
 MAIN_CHARACTER:
-- [prompt 1]
-- [prompt 2]
+{chr(10).join(f'- [prompt {i+1}]' for i in range(images_per_category))}
 
 ENEMIES:
-- [prompt 1]
-- [prompt 2]
+{chr(10).join(f'- [prompt {i+1}]' for i in range(images_per_category))}
 
 ENVIRONMENTS:
-- [prompt 1]
-- [prompt 2]
+{chr(10).join(f'- [prompt {i+1}]' for i in range(images_per_category))}
 
 WEAPONS:
-- [prompt 1]
-- [prompt 2]
+{chr(10).join(f'- [prompt {i+1}]' for i in range(images_per_category))}
 
 COLLECTIBLES:
-- [prompt 1]
-- [prompt 2]
+{chr(10).join(f'- [prompt {i+1}]' for i in range(images_per_category))}
 
 NPCS:
-- [prompt 1]
-- [prompt 2]
+{chr(10).join(f'- [prompt {i+1}]' for i in range(images_per_category))}
 
 UI_ELEMENTS:
-- [prompt 1]
-- [prompt 2]
+{chr(10).join(f'- [prompt {i+1}]' for i in range(images_per_category))}
 
-Each prompt should be descriptive, include artistic style and technical details."""
+Each prompt should be descriptive, include 2D illustration artistic style and technical details.
+Remember: NO 3D renders, only 2D illustrations and hand-painted concept art style."""
 
     try:
         request_body = {
@@ -95,47 +91,60 @@ Each prompt should be descriptive, include artistic style and technical details.
         total_prompts = sum(len(p) for p in prompts.values())
         if total_prompts == 0:
             st.warning("Claude didn't generate valid prompts. Using fallback prompts...")
-            return get_fallback_prompts(game_description)
+            return get_fallback_prompts(game_description, images_per_category)
 
         return prompts
 
     except Exception as e:
         st.warning(f"Error with Claude: {str(e)}. Using fallback prompts...")
-        return get_fallback_prompts(game_description)
+        return get_fallback_prompts(game_description, images_per_category)
 
-def get_fallback_prompts(game_description):
+def get_fallback_prompts(game_description, images_per_category):
     """Fallback prompts if Claude fails or is unavailable"""
-    base = f"concept art, {game_description}, professional game art, detailed, high quality"
+    base = f"2D illustration, concept art, {game_description}, hand-painted style, professional game art, detailed, high quality"
 
-    return {
+    prompts_templates = {
         "main_character": [
             f"Main character hero design, {base}, full body, dynamic pose",
-            f"Protagonist character concept, {base}, front and side view"
+            f"Protagonist character concept, {base}, front and side view",
+            f"Hero character sheet, {base}, multiple angles"
         ],
         "enemies": [
             f"Enemy creature design, {base}, menacing, threatening",
-            f"Antagonist monster concept, {base}, detailed anatomy"
+            f"Antagonist monster concept, {base}, detailed anatomy",
+            f"Enemy character variants, {base}, action poses"
         ],
         "environments": [
             f"Game environment landscape, {base}, atmospheric, detailed background",
-            f"Game world scenery, {base}, cinematic composition"
+            f"Game world scenery, {base}, cinematic composition",
+            f"Environment panorama, {base}, establishing shot"
         ],
         "weapons": [
             f"Weapon design concept, {base}, detailed illustration",
-            f"Game weapon asset, {base}, multiple angles"
+            f"Game weapon asset, {base}, multiple angles",
+            f"Weapon blueprint, {base}, technical drawings"
         ],
         "collectibles": [
             f"Collectible items, {base}, game pickups, power-ups",
-            f"Game items concept, {base}, glowing effects"
+            f"Game items concept, {base}, glowing effects",
+            f"Item variations, {base}, different states"
         ],
         "npcs": [
             f"NPC character design, {base}, friendly character",
-            f"Supporting character concept, {base}, full body"
+            f"Supporting character concept, {base}, full body",
+            f"NPC character sheet, {base}, expressions and poses"
         ],
         "ui_elements": [
             f"Game UI design, {base}, HUD elements, interface mockup",
-            f"Menu interface, {base}, buttons and icons"
+            f"Menu interface, {base}, buttons and icons",
+            f"UI components, {base}, widget designs"
         ]
+    }
+
+    # Return only the requested number of prompts per category
+    return {
+        category: templates[:images_per_category]
+        for category, templates in prompts_templates.items()
     }
 
 def parse_prompts(response_text):
@@ -352,7 +361,8 @@ if st.button("🚀 Generate Concept Art", type="primary"):
             prompts = generate_prompts(
                 game_description,
                 bedrock_client,
-                "us.anthropic.claude-3-5-sonnet-20241022-v2:0"
+                "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
+                images_per_category
             )
             st.success("✅ Prompts generated successfully")
 
