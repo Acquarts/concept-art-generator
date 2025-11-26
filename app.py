@@ -1,7 +1,7 @@
 """
 Concept Art Generator - Streamlit App
-Genera arte conceptual para videojuegos usando Claude (prompts) + FLUX (imágenes via fal.ai)
-Versión 3.0 - Migrado de AWS Titan a fal.ai FLUX
+Generates concept art for video games using Claude (prompts) + FLUX (images via fal.ai)
+Version 3.0 - Migrated from AWS Titan to fal.ai FLUX
 """
 
 import os
@@ -15,7 +15,7 @@ from botocore.exceptions import ClientError
 import fal_client
 import requests
 
-# ==================== CONFIGURACIÓN ====================
+# ==================== CONFIGURATION ====================
 
 st.set_page_config(
     page_title="Concept Art Generator",
@@ -23,10 +23,10 @@ st.set_page_config(
     layout="wide"
 )
 
-# ==================== FUNCIONES CORE ====================
+# ==================== CORE FUNCTIONS ====================
 
 def get_bedrock_client(region, aws_key, aws_secret):
-    """Crea cliente de AWS Bedrock (solo para Claude - generación de prompts)"""
+    """Creates AWS Bedrock client (only for Claude - prompt generation)"""
     return boto3.client(
         service_name="bedrock-runtime",
         region_name=region,
@@ -35,13 +35,13 @@ def get_bedrock_client(region, aws_key, aws_secret):
     )
 
 def generate_prompts(game_description, bedrock_client, model_id):
-    """Genera prompts creativos con Claude via AWS Bedrock"""
-    system_prompt = """Eres un experto en arte conceptual para videojuegos.
-    Genera prompts detallados optimizados para el modelo FLUX de generación de imágenes."""
+    """Generates creative prompts with Claude via AWS Bedrock"""
+    system_prompt = """You are an expert in video game concept art.
+    Generate detailed prompts optimized for the FLUX image generation model."""
 
-    user_prompt = f"""Descripción del videojuego: {game_description}
+    user_prompt = f"""Video game description: {game_description}
 
-Genera 2 prompts específicos para cada categoría (en inglés, optimizados para FLUX):
+Generate 2 specific prompts for each category (in English, optimized for FLUX):
 
 MAIN_CHARACTER:
 - [prompt 1]
@@ -71,7 +71,7 @@ UI_ELEMENTS:
 - [prompt 1]
 - [prompt 2]
 
-Cada prompt debe ser descriptivo, incluir estilo artístico y detalles técnicos."""
+Each prompt should be descriptive, include artistic style and technical details."""
 
     try:
         request_body = {
@@ -91,20 +91,20 @@ Cada prompt debe ser descriptivo, incluir estilo artístico y detalles técnicos
 
         prompts = parse_prompts(claude_response)
 
-        # Verificar que haya prompts
+        # Verify there are prompts
         total_prompts = sum(len(p) for p in prompts.values())
         if total_prompts == 0:
-            st.warning("Claude no generó prompts válidos. Usando prompts de respaldo...")
+            st.warning("Claude didn't generate valid prompts. Using fallback prompts...")
             return get_fallback_prompts(game_description)
 
         return prompts
 
     except Exception as e:
-        st.warning(f"Error con Claude: {str(e)}. Usando prompts de respaldo...")
+        st.warning(f"Error with Claude: {str(e)}. Using fallback prompts...")
         return get_fallback_prompts(game_description)
 
 def get_fallback_prompts(game_description):
-    """Prompts de respaldo si Claude falla o no está disponible"""
+    """Fallback prompts if Claude fails or is unavailable"""
     base = f"concept art, {game_description}, professional game art, detailed, high quality"
 
     return {
@@ -139,7 +139,7 @@ def get_fallback_prompts(game_description):
     }
 
 def parse_prompts(response_text):
-    """Parsea la respuesta de Claude y extrae los prompts por categoría"""
+    """Parses Claude's response and extracts prompts by category"""
     category_map = {
         "MAIN_CHARACTER": "main_character",
         "ENEMIES": "enemies",
@@ -162,28 +162,28 @@ def parse_prompts(response_text):
 
         if current_category and (line.startswith('-') or line.startswith('*')):
             prompt = line.lstrip('-*').strip()
-            if prompt and not prompt.startswith('['):  # Ignorar placeholders
+            if prompt and not prompt.startswith('['):  # Ignore placeholders
                 prompts[current_category].append(prompt)
 
     return prompts
 
 def generate_image_fal(prompt, model_id, fal_api_key):
     """
-    Genera una imagen usando fal.ai con modelos FLUX
+    Generates an image using fal.ai with FLUX models
 
     Args:
-        prompt: Texto descriptivo para generar la imagen
-        model_id: ID del modelo FLUX a usar (flux/dev, flux-pro, flux/schnell)
-        fal_api_key: API key de fal.ai
+        prompt: Descriptive text to generate the image
+        model_id: FLUX model ID to use (flux/dev, flux-pro, flux/schnell)
+        fal_api_key: fal.ai API key
 
     Returns:
-        bytes: Datos de la imagen en formato PNG
+        bytes: Image data in PNG format
     """
 
-    # Configurar API key
+    # Configure API key
     os.environ["FAL_KEY"] = fal_api_key
 
-    # Configuración según modelo FLUX
+    # Configuration by FLUX model
     model_configs = {
         "fal-ai/flux-pro": {
             "model": "fal-ai/flux-pro",
@@ -219,13 +219,13 @@ def generate_image_fal(prompt, model_id, fal_api_key):
     config = model_configs.get(model_id, model_configs["fal-ai/flux/dev"])
 
     try:
-        # Llamar a fal.ai
+        # Call fal.ai
         result = fal_client.subscribe(
             config["model"],
             arguments=config["params"]
         )
 
-        # Descargar imagen
+        # Download image
         if result and "images" in result and len(result["images"]) > 0:
             image_url = result["images"][0]["url"]
             response = requests.get(image_url, timeout=30)
@@ -235,10 +235,10 @@ def generate_image_fal(prompt, model_id, fal_api_key):
         return None
 
     except Exception as e:
-        raise Exception(f"Error con fal.ai: {str(e)}")
+        raise Exception(f"Error with fal.ai: {str(e)}")
 
 def save_image(image_data, category, index, project_dir):
-    """Guarda imagen en el sistema de archivos"""
+    """Saves image to the file system"""
     category_dir = Path(project_dir) / category
     category_dir.mkdir(parents=True, exist_ok=True)
 
@@ -248,22 +248,22 @@ def save_image(image_data, category, index, project_dir):
 
     return str(filepath)
 
-# ==================== INTERFAZ STREAMLIT ====================
+# ==================== STREAMLIT INTERFACE ====================
 
-# Nombres de categorías
+# Category names
 CATEGORY_NAMES = {
-    "main_character": "Personaje Principal", "enemies": "Enemigos",
-    "environments": "Ambientes", "weapons": "Armas",
-    "collectibles": "Coleccionables", "npcs": "NPCs",
+    "main_character": "Main Character", "enemies": "Enemies",
+    "environments": "Environments", "weapons": "Weapons",
+    "collectibles": "Collectibles", "npcs": "NPCs",
     "ui_elements": "UI Elements"
 }
 
 st.title("🎨 Concept Art Generator")
-st.markdown("Genera arte conceptual para videojuegos usando **Claude + FLUX** (fal.ai)")
+st.markdown("Generate concept art for video games using **Claude + FLUX** (fal.ai)")
 
-# Sidebar - Configuración
+# Sidebar - Configuration
 with st.sidebar:
-    st.header("⚙️ Configuración")
+    st.header("⚙️ Configuration")
 
     st.subheader("🧠 Claude (Prompts)")
     aws_key = st.text_input("AWS Access Key ID", type="password",
@@ -276,96 +276,96 @@ with st.sidebar:
 
     st.divider()
 
-    st.subheader("🎨 fal.ai (Imágenes)")
+    st.subheader("🎨 fal.ai (Images)")
     fal_api_key = st.text_input("fal.ai API Key", type="password",
                                  value=os.getenv("FAL_KEY", ""),
-                                 help="Obtén tu API key en https://fal.ai/dashboard/keys")
+                                 help="Get your API key at https://fal.ai/dashboard/keys")
 
     image_model = st.selectbox(
-        "Modelo FLUX",
+        "FLUX Model",
         [
             "fal-ai/flux/dev",
             "fal-ai/flux-pro",
             "fal-ai/flux/schnell"
         ],
         index=0,
-        help="FLUX Dev: Balance calidad/velocidad | Pro: Máxima calidad | Schnell: Ultra rápido"
+        help="FLUX Dev: Quality/speed balance | Pro: Maximum quality | Schnell: Ultra fast"
     )
 
-    images_per_category = st.slider("Imágenes por categoría", 1, 3, 2)
+    images_per_category = st.slider("Images per category", 1, 3, 2)
 
     st.divider()
 
     categories_to_generate = st.multiselect(
-        "Categorías a generar",
+        "Categories to generate",
         ["main_character", "enemies", "environments", "weapons",
          "collectibles", "npcs", "ui_elements"],
         default=["main_character", "enemies", "environments"]
     )
 
 # Main area
-st.header("📝 Descripción del Videojuego")
+st.header("📝 Video Game Description")
 
 game_description = st.text_area(
-    "Describe tu videojuego en detalle (género, estilo, ambientación, etc.)",
+    "Describe your video game in detail (genre, style, setting, etc.)",
     height=150,
-    placeholder="Ejemplo: Juego de acción RPG en tercera persona estilo Dark Souls..."
+    placeholder="Example: Third-person action RPG game, Dark Souls style..."
 )
 
-project_name = st.text_input("Nombre del proyecto (opcional)",
-                              placeholder="mi_proyecto")
+project_name = st.text_input("Project name (optional)",
+                              placeholder="my_project")
 
-# Botón principal
-if st.button("🚀 Generar Arte Conceptual", type="primary"):
+# Main button
+if st.button("🚀 Generate Concept Art", type="primary"):
 
-    # Validaciones
+    # Validations
     if not game_description:
-        st.error("Por favor, ingresa una descripción del videojuego")
+        st.error("Please enter a video game description")
         st.stop()
 
     if not aws_key or not aws_secret:
-        st.error("Por favor, configura tus credenciales de AWS para Claude en el sidebar")
+        st.error("Please configure your AWS credentials for Claude in the sidebar")
         st.stop()
 
     if not fal_api_key:
-        st.error("Por favor, configura tu API Key de fal.ai en el sidebar")
+        st.error("Please configure your fal.ai API Key in the sidebar")
         st.stop()
 
     if not categories_to_generate:
-        st.error("Selecciona al menos una categoría para generar")
+        st.error("Select at least one category to generate")
         st.stop()
 
-    # Iniciar generación
+    # Start generation
     try:
-        # Crear directorio del proyecto
+        # Create project directory
         if not project_name:
             project_name = "project_" + datetime.now().strftime("%Y%m%d_%H%M%S")
 
         project_dir = Path("outputs") / project_name
         project_dir.mkdir(parents=True, exist_ok=True)
 
-        # Cliente Bedrock
+        # Bedrock client
         bedrock_client = get_bedrock_client(aws_region, aws_key, aws_secret)
 
-        # PASO 1: Generar prompts con Claude
-        with st.spinner("🧠 Generando prompts creativos con Claude..."):
+        # STEP 1: Generate prompts with Claude
+        with st.spinner("🧠 Generating creative prompts with Claude..."):
             prompts = generate_prompts(
                 game_description,
                 bedrock_client,
                 "us.anthropic.claude-3-5-sonnet-20241022-v2:0"
             )
-            st.success("✅ Prompts generados exitosamente")
+            st.success("✅ Prompts generated successfully")
 
-            # Mostrar prompts generados
-            with st.expander("🔍 Ver prompts generados"):
+            # Show generated prompts
+            with st.expander("🔍 View generated prompts"):
                 for cat, cat_prompts in prompts.items():
                     if cat in categories_to_generate and cat_prompts:
                         st.markdown(f"**{CATEGORY_NAMES.get(cat, cat)}:**")
                         for i, p in enumerate(cat_prompts[:images_per_category], 1):
                             st.text(f"{i}. {p[:100]}...")
 
-        # PASO 2: Generar imágenes
-        st.header("🖼️ Generando Imágenes")
+        # STEP 2: Generate images
+        st.header("🖼️ Generating Images")
 
         all_generated_images = {}
         total_generated = 0
@@ -376,7 +376,7 @@ if st.button("🚀 Generar Arte Conceptual", type="primary"):
             category_prompts = prompts.get(category, [])[:images_per_category]
 
             if not category_prompts:
-                st.warning(f"No hay prompts para {category}")
+                st.warning(f"No prompts available for {category}")
                 continue
 
             cols = st.columns(len(category_prompts))
@@ -384,7 +384,7 @@ if st.button("🚀 Generar Arte Conceptual", type="primary"):
 
             for idx, (col, prompt) in enumerate(zip(cols, category_prompts), 1):
                 with col:
-                    with st.spinner(f"Generando {idx}/{len(category_prompts)}..."):
+                    with st.spinner(f"Generating {idx}/{len(category_prompts)}..."):
                         try:
                             image_data = generate_image_fal(
                                 prompt,
@@ -395,23 +395,23 @@ if st.button("🚀 Generar Arte Conceptual", type="primary"):
                             if image_data:
                                 filepath = save_image(image_data, category, idx, project_dir)
                                 generated_paths.append(filepath)
-                                st.image(image_data, caption=f"Imagen {idx}", use_column_width=True)
+                                st.image(image_data, caption=f"Image {idx}", use_column_width=True)
                                 st.caption(f"💬 {prompt[:80]}...")
                                 total_generated += 1
                             else:
-                                st.error(f"Error generando imagen {idx}")
+                                st.error(f"Error generating image {idx}")
 
                         except Exception as e:
                             st.error(f"Error: {str(e)}")
 
             all_generated_images[category] = generated_paths
 
-        # Resumen final
+        # Final summary
         st.divider()
-        st.success(f"🎉 Generación completada: {total_generated} imágenes creadas")
-        st.info(f"📁 Proyecto guardado en: `{project_dir}`")
+        st.success(f"🎉 Generation completed: {total_generated} images created")
+        st.info(f"📁 Project saved at: `{project_dir}`")
 
-        # Guardar metadata
+        # Save metadata
         metadata = {
             "generated_at": datetime.now().isoformat(),
             "game_description": game_description,
@@ -424,11 +424,11 @@ if st.button("🚀 Generar Arte Conceptual", type="primary"):
             json.dump(metadata, f, indent=2, ensure_ascii=False)
 
     except ClientError as e:
-        st.error(f"❌ Error de AWS: {str(e)}")
-        st.info("Verifica tus credenciales y permisos de Bedrock")
+        st.error(f"❌ AWS Error: {str(e)}")
+        st.info("Verify your credentials and Bedrock permissions")
 
     except Exception as e:
-        st.error(f"❌ Error inesperado: {str(e)}")
+        st.error(f"❌ Unexpected error: {str(e)}")
 
 # Footer
 st.divider()

@@ -1,289 +1,228 @@
-# Guía de Configuración - AWS Bedrock + fal.ai (v3.0)
+# Configuration Guide - AWS Bedrock + fal.ai (v3.0)
 
-Esta guía te ayudará a configurar el Concept Art Agent v3.0 usando:
-- **AWS Bedrock** (solo para Claude - generación de prompts)
-- **fal.ai** (para FLUX - generación de imágenes)
+This guide will help you configure Concept Art Agent v3.0 using:
+- **AWS Bedrock** (only for Claude - prompt generation)
+- **fal.ai** (for FLUX - image generation)
 
-## ¿Por qué esta configuración?
+## Why this configuration?
 
-- **AWS Bedrock (Claude)**: Para generar prompts creativos de alta calidad
-- **fal.ai (FLUX)**: Mejor calidad de imágenes que AWS Titan
-- **Sin filtros restrictivos**: No más errores de validación de contenido de AWS
-- **Más económico**: Costos competitivos para generación de imágenes
+- **AWS Bedrock (Claude)**: To generate high-quality creative prompts
+- **fal.ai (FLUX)**: Better image quality than AWS Titan
+- **No restrictive filters**: No more AWS content validation errors
+- **More economical**: Competitive costs for image generation
 
-## Paso 1: Obtener Credenciales de AWS
+## Step 1: Get AWS Credentials
 
-### 1.1 Acceder a AWS Console
+### 1.1 Access AWS Console
 
-1. Ve a [AWS Console](https://console.aws.amazon.com)
-2. Inicia sesión con tu cuenta
+1. Go to [AWS Console](https://console.aws.amazon.com)
+2. Sign in with your account
 
-### 1.2 Crear Access Keys
+### 1.2 Create Access Keys
 
-1. Ve a **IAM** (Identity and Access Management)
-2. Navega a **Users** → Selecciona tu usuario
-3. Ve a la pestaña **Security credentials**
-4. En la sección **Access keys**, haz clic en **Create access key**
-5. Selecciona **Use case**: "Third-party service" o "CLI"
-6. Guarda tanto el **Access Key ID** como el **Secret Access Key**
+1. Go to **IAM** (Identity and Access Management)
+2. Navigate to **Users** → Select your user
+3. Go to **Security credentials** tab
+4. In the **Access keys** section, click **Create access key**
+5. Select **Use case**: "Third-party service" or "CLI"
+6. Save both the **Access Key ID** and **Secret Access Key**
 
-**IMPORTANTE**: El Secret Access Key solo se muestra una vez. Guárdalo de forma segura.
+**IMPORTANT**: The Secret Access Key is only shown once. Save it securely.
 
-### 1.3 Permisos Necesarios
+### 1.3 Required Permissions
 
-Tu usuario de AWS debe tener permisos para:
+Your AWS user must have permissions for:
 - `bedrock:InvokeModel`
 - `bedrock:InvokeModelWithResponseStream`
 
-Puedes usar la política administrada: `AmazonBedrockFullAccess`
+You can use the managed policy: `AmazonBedrockFullAccess`
 
-## Paso 2: Verificar Acceso a Claude en Bedrock
+## Step 2: Verify Claude Access in Bedrock
 
-### 2.1 Acceder a Amazon Bedrock
+### 2.1 Access Amazon Bedrock
 
-1. En AWS Console, busca **Amazon Bedrock**
-2. Ve a **Model access** en el menú lateral
-3. Verifica que tengas acceso a:
+1. In AWS Console, search for **Amazon Bedrock**
+2. Go to **Model access** in the sidebar
+3. Verify you have access to:
    - ✅ **Claude 3.5 Sonnet** (us.anthropic.claude-3-5-sonnet-20241022-v2:0)
 
-**NOTA v3.0**: Ya NO necesitas acceso a Stability AI ni Titan, porque usaremos fal.ai para las imágenes
+**NOTE v3.0**: You NO longer need access to Stability AI or Titan, because we'll use fal.ai for images
 
-### 2.2 Verificar Región
+### 2.2 Verify Region
 
-Bedrock no está disponible en todas las regiones. Regiones recomendadas:
-- **us-east-1** (N. Virginia) - Recomendada
+Bedrock is not available in all regions. Recommended regions:
+- **us-east-1** (N. Virginia) - Recommended
 - **us-west-2** (Oregon)
-- **eu-west-1** (Irlanda)
+- **eu-west-1** (Ireland)
 
-## Paso 3: Configurar fal.ai
+## Step 3: Configure fal.ai
 
-### 3.1 Crear cuenta en fal.ai
+### 3.1 Create fal.ai account
 
-1. Ve a https://fal.ai
-2. Regístrate con tu email o GitHub
-3. Tienen plan gratuito para probar
+1. Go to https://fal.ai
+2. Sign up with your email or GitHub
+3. They have a free plan for testing
 
-### 3.2 Obtener API Key
+### 3.2 Get API Key
 
-1. Ve a https://fal.ai/dashboard/keys
-2. Haz clic en **Create new key**
-3. Copia tu API key (guárdala de forma segura)
+1. Go to https://fal.ai/dashboard/keys
+2. Click **Create new key**
+3. Copy your API key (save it securely)
 
-## Paso 4: Configurar el archivo .env
+## Step 4: Configure .env file
 
-Abre tu archivo `.env` y configura las credenciales:
+Open your `.env` file and configure the credentials:
 
 ```env
 # ========================================
-# CONCEPT ART AGENT v3.0 - CONFIGURACIÓN
+# CONCEPT ART AGENT v3.0 - CONFIGURATION
 # ========================================
 
-# AWS (para Claude - generación de prompts creativos)
-AWS_ACCESS_KEY_ID=xxxxxxxxxxxx
-AWS_SECRET_ACCESS_KEY=xxxxxxxxxxxxxxx
+# AWS (for Claude - creative prompt generation)
+AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 
-# fal.ai (para FLUX - generación de imágenes)
-FAL_KEY=tu_fal_api_key_aqui
+# fal.ai (for FLUX - image generation)
+FAL_KEY=your_fal_api_key_here
 ```
 
-### Modelos Disponibles
+### Available Models
 
-**Claude (AWS Bedrock) - Para prompts:**
-- Se usa automáticamente: `us.anthropic.claude-3-5-sonnet-20241022-v2:0`
+**Claude (AWS Bedrock) - For prompts:**
+- Automatically uses: `us.anthropic.claude-3-5-sonnet-20241022-v2:0`
 
-**FLUX (fal.ai) - Para imágenes:**
-- `fal-ai/flux/dev` - Balance calidad/velocidad (Recomendado)
-- `fal-ai/flux-pro` - Máxima calidad
-- `fal-ai/flux/schnell` - Ultra rápido y económico
+**FLUX (fal.ai) - For images:**
+- `fal-ai/flux/dev` - Quality/speed balance (Recommended)
+- `fal-ai/flux-pro` - Maximum quality
+- `fal-ai/flux/schnell` - Ultra fast and economical
 
-## Paso 5: Probar la Configuración
+## Step 5: Test Configuration
 
-### 5.1 Instalar dependencias
+### 5.1 Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 5.2 Ejecutar la aplicación Streamlit
+### 5.2 Run Streamlit application
 
 ```bash
 streamlit run app.py
 ```
 
-### 5.3 Probar la generación
+### 5.3 Test generation
 
-1. La app se abrirá en tu navegador (http://localhost:8501)
-2. Ingresa tus credenciales en el sidebar:
+1. The app will open in your browser (http://localhost:8501)
+2. Enter your credentials in the sidebar:
    - AWS Access Key ID
    - AWS Secret Access Key
    - fal.ai API Key
-3. Describe tu videojuego
-4. Selecciona el modelo FLUX (recomendado: flux/dev)
-5. Haz clic en "Generar Arte Conceptual"
+3. Describe your video game
+4. Select FLUX model (recommended: flux/dev)
+5. Click "Generate Concept Art"
 
-## Uso con AWS Bedrock
+## Estimated Costs (v3.0)
 
-### Desde Python
-
-```python
-from concept_art_agent.bedrock_generator import (
-    BedrockPromptGenerator,
-    BedrockImageGenerator
-)
-from concept_art_agent.organizer import ResultOrganizer
-
-# Inicializar generadores
-prompt_gen = BedrockPromptGenerator(
-    region_name="us-east-1",
-    model_id="anthropic.claude-3-5-sonnet-20241022-v2:0"
-)
-
-image_gen = BedrockImageGenerator(
-    region_name="us-east-1",
-    model_id="stability.stable-diffusion-xl-v1"
-)
-
-# Generar prompts
-game_description = "Shooter espacial futurista con naves y aliens"
-prompts = prompt_gen.generate_prompts(game_description)
-
-# Generar imágenes
-organizer = ResultOrganizer()
-project_dir = organizer.create_project_structure("my_game")
-
-for category, category_prompts in prompts.items():
-    category_dir = organizer.get_category_dir(project_dir, category)
-    images = image_gen.generate_batch(
-        prompts=category_prompts[:2],
-        output_dir=category_dir,
-        prefix=category
-    )
-```
-
-### Desde Línea de Comandos
-
-```bash
-# Básico con Bedrock
-python main.py --prompt "Tu juego aquí" --provider bedrock
-
-# Especificar modelos
-python main.py \
-  --prompt "Horror survival en hospital" \
-  --provider bedrock \
-  --images-per-category 3
-```
-
-### Ejecutar Ejemplos
-
-```bash
-# Ejemplo completo con Bedrock
-python example_bedrock.py
-
-# Ver ejemplos específicos editando el archivo
-```
-
-## Costos Estimados (v3.0)
-
-### Claude (AWS Bedrock) - Generación de Prompts
+### Claude (AWS Bedrock) - Prompt Generation
 
 **Claude 3.5 Sonnet:**
 - Input: ~$3.00 / 1M tokens
 - Output: ~$15.00 / 1M tokens
-- **Por proyecto: ~$0.003** (uso muy bajo)
+- **Per project: ~$0.003** (very low usage)
 
-### FLUX (fal.ai) - Generación de Imágenes
+### FLUX (fal.ai) - Image Generation
 
 **FLUX Dev:**
-- ~$0.03 por imagen
-- Proyecto (14 imágenes): ~$0.42
+- ~$0.03 per image
+- Project (14 images): ~$0.42
 
 **FLUX Pro:**
-- ~$0.05 por imagen
-- Proyecto (14 imágenes): ~$0.70
+- ~$0.05 per image
+- Project (14 images): ~$0.70
 
 **FLUX Schnell:**
-- ~$0.02 por imagen
-- Proyecto (14 imágenes): ~$0.28
+- ~$0.02 per image
+- Project (14 images): ~$0.28
 
-**Total por proyecto (FLUX Dev)**: ~$0.42 + $0.003 ≈ **$0.42 USD**
+**Total per project (FLUX Dev)**: ~$0.42 + $0.003 ≈ **$0.42 USD**
 
-## Comparación de versiones
+## Version Comparison
 
-| Característica | v2.0 (AWS Titan) | v3.0 (fal.ai FLUX) |
+| Feature | v2.0 (AWS Titan) | v3.0 (fal.ai FLUX) |
 |---|---|---|
-| Precio por imagen | $0.04 | $0.02 - $0.05 |
-| Calidad | Media | Alta/Excelente |
-| Filtros contenido | Muy restrictivos ❌ | Sin filtros ✅ |
-| Velocidad | Media | Rápida/Ultra rápida |
-| Proyecto (14 imgs) | ~$0.56 | $0.28 - $0.70 |
-| Errores validación | Frecuentes | Ninguno |
-| **Total proyecto** | **$0.57** | **$0.42** (Dev) |
+| Price per image | $0.04 | $0.02 - $0.05 |
+| Quality | Medium | High/Excellent |
+| Content filters | Very restrictive ❌ | No filters ✅ |
+| Speed | Medium | Fast/Ultra fast |
+| Project (14 imgs) | ~$0.56 | $0.28 - $0.70 |
+| Validation errors | Frequent | None |
+| **Total project** | **$0.57** | **$0.42** (Dev) |
 
-## Solución de Problemas
+## Troubleshooting
 
-### Errores de AWS Bedrock (Claude)
+### AWS Bedrock Errors (Claude)
 
 **Error: "Could not connect to the endpoint"**
-- Verifica que tu región soporte Bedrock
-- Usa `us-east-1` (recomendado)
-- Verifica que Bedrock esté habilitado en tu cuenta
+- Verify your region supports Bedrock
+- Use `us-east-1` (recommended)
+- Verify Bedrock is enabled in your account
 
 **Error: "AccessDeniedException"**
-- Ve a IAM y añade la política `AmazonBedrockFullAccess`
-- Verifica que tu usuario tenga permisos `bedrock:InvokeModel`
+- Go to IAM and add the `AmazonBedrockFullAccess` policy
+- Verify your user has `bedrock:InvokeModel` permissions
 
 **Error: "ValidationException: Model not found"**
-- Ve a AWS Bedrock → Model access
-- Habilita Claude 3.5 Sonnet
-- Espera unos minutos para la activación
+- Go to AWS Bedrock → Model access
+- Enable Claude 3.5 Sonnet
+- Wait a few minutes for activation
 
-**Credenciales AWS no funcionan**
-- Verifica que las credenciales estén correctamente copiadas
-- No debe haber espacios extra
-- El Access Key ID debe empezar con `AKIA`
+**AWS credentials don't work**
+- Verify credentials are correctly copied
+- There should be no extra spaces
+- Access Key ID must start with `AKIA`
 
-### Errores de fal.ai (FLUX)
+### fal.ai Errors (FLUX)
 
-**Error de autenticación**
-- Verifica que tu API key de fal.ai sea correcta
-- Cópiala sin espacios extra del dashboard
+**Authentication error**
+- Verify your fal.ai API key is correct
+- Copy it without extra spaces from the dashboard
 
 **Error: "Insufficient credits"**
-- Revisa tu saldo en https://fal.ai/dashboard
-- Recarga créditos si es necesario
-- El plan gratuito tiene límites
+- Check your balance at https://fal.ai/dashboard
+- Reload credits if necessary
+- Free plan has limits
 
-**Imágenes no se generan**
-- Prueba con FLUX Schnell primero (más rápido y barato)
-- Verifica que tu prompt no esté vacío
-- Revisa los logs de error en la app
+**Images don't generate**
+- Try FLUX Schnell first (faster and cheaper)
+- Verify your prompt is not empty
+- Check error logs in the app
 
-**Timeout o muy lento**
-- FLUX Schnell es el más rápido (4 steps)
-- FLUX Dev es balance (28 steps)
-- FLUX Pro es el más lento pero mejor calidad
+**Timeout or very slow**
+- FLUX Schnell is the fastest (4 steps)
+- FLUX Dev is balanced (28 steps)
+- FLUX Pro is the slowest but best quality
 
-## Seguridad
+## Security
 
-### Mejores Prácticas
+### Best Practices
 
-1. **No compartas tu `.env`**: Este archivo contiene credenciales privadas
-2. **Usa .gitignore**: Asegúrate que `.env` esté en `.gitignore`
-3. **Rota credenciales**: Cambia tus Access Keys periódicamente
-4. **Permisos mínimos**: Da solo los permisos necesarios a tu usuario
-5. **Monitorea uso**: Revisa AWS CloudWatch para detectar uso anormal
+1. **Don't share your `.env`**: This file contains private credentials
+2. **Use .gitignore**: Make sure `.env` is in `.gitignore`
+3. **Rotate credentials**: Change your Access Keys periodically
+4. **Minimum permissions**: Give only necessary permissions to your user
+5. **Monitor usage**: Check AWS CloudWatch to detect abnormal usage
 
-### Revocar Access Keys
+### Revoke Access Keys
 
-Si crees que tus credenciales están comprometidas:
+If you believe your credentials are compromised:
 
-1. Ve a IAM → Users → Tu usuario
+1. Go to IAM → Users → Your user
 2. Security credentials
-3. Encuentra el Access Key comprometido
-4. Haz clic en "Actions" → "Deactivate" o "Delete"
-5. Crea nuevas credenciales
+3. Find the compromised Access Key
+4. Click "Actions" → "Deactivate" or "Delete"
+5. Create new credentials
 
-## Recursos Adicionales
+## Additional Resources
 
 ### AWS Bedrock
 - [AWS Bedrock Documentation](https://docs.aws.amazon.com/bedrock/)
@@ -296,25 +235,25 @@ Si crees que tus credenciales están comprometidas:
 - [fal.ai Dashboard](https://fal.ai/dashboard)
 - [fal.ai Pricing](https://fal.ai/pricing)
 
-## Soporte
+## Support
 
-Si tienes problemas:
+If you have problems:
 
-1. **AWS**: Verifica la [documentación de AWS Bedrock](https://docs.aws.amazon.com/bedrock/)
-2. **fal.ai**: Consulta [fal.ai docs](https://fal.ai/docs)
-3. **App**: Revisa los logs de error en la interfaz de Streamlit
-4. Ejecuta `streamlit run app.py` y verifica la consola
+1. **AWS**: Check the [AWS Bedrock documentation](https://docs.aws.amazon.com/bedrock/)
+2. **fal.ai**: Consult [fal.ai docs](https://fal.ai/docs)
+3. **App**: Check error logs in the Streamlit interface
+4. Run `streamlit run app.py` and check the console
 
 ---
 
 ## Changelog v3.0
 
-✨ **Cambios principales**:
-- Migrado de AWS Titan a fal.ai FLUX para generación de imágenes
-- AWS Bedrock solo para Claude (prompts creativos)
-- Mejor calidad de imágenes con FLUX
-- Sin filtros restrictivos de contenido
-- 3 modelos FLUX disponibles (Dev, Pro, Schnell)
-- Costos más competitivos
+✨ **Main changes**:
+- Migrated from AWS Titan to fal.ai FLUX for image generation
+- AWS Bedrock only for Claude (creative prompts)
+- Better image quality with FLUX
+- No restrictive content filters
+- 3 FLUX models available (Dev, Pro, Schnell)
+- More competitive costs
 
-¡Listo! Ahora puedes generar arte conceptual de alta calidad con Claude + FLUX.
+Ready! Now you can generate high-quality concept art with Claude + FLUX.

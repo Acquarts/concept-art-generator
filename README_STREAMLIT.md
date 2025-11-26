@@ -1,83 +1,83 @@
 # 🎨 Concept Art Generator v3.0 - Streamlit App
 
-Genera arte conceptual para videojuegos usando **Claude (prompts) + FLUX (imágenes via fal.ai)** en una interfaz web simple y elegante.
+Generates concept art for video games using **Claude (prompts) + FLUX (images via fal.ai)** in a simple and elegant web interface.
 
-## ✨ Características
+## ✨ Features
 
-- **Interfaz web moderna**: Streamlit para fácil interacción
-- **Doble IA**:
-  - **Claude 3.5 Sonnet** (AWS Bedrock) para prompts creativos
-  - **FLUX** (fal.ai) para imágenes de alta calidad
-- **Sin filtros restrictivos**: No más errores de validación de contenido
-- **3 modelos FLUX**: Dev, Pro, Schnell
-- **Personalizable**: Selecciona categorías y número de imágenes
-- **Visualización en tiempo real**: Ve las imágenes generándose
+- **Modern web interface**: Streamlit for easy interaction
+- **Dual AI**:
+  - **Claude 3.5 Sonnet** (AWS Bedrock) for creative prompts
+  - **FLUX** (fal.ai) for high-quality images
+- **No restrictive filters**: No more content validation errors
+- **3 FLUX models**: Dev, Pro, Schnell
+- **Customizable**: Select categories and number of images
+- **Real-time visualization**: See images as they're generated
 
-## 🚀 Instalación Rápida
+## 🚀 Quick Installation
 
-### 1. Instalar dependencias
+### 1. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Configurar credenciales
+### 2. Configure credentials
 
-Necesitas **2 servicios**:
+You need **2 services**:
 
-**A) AWS Bedrock (para Claude - prompts)**
+**A) AWS Bedrock (for Claude - prompts)**
 - AWS Access Key ID
 - AWS Secret Access Key
-- Acceso habilitado a Bedrock en us-east-1
-- Modelo habilitado: Claude 3.5 Sonnet (`us.anthropic.claude-3-5-sonnet-20241022-v2:0`)
+- Bedrock access enabled in us-east-1
+- Enabled model: Claude 3.5 Sonnet (`us.anthropic.claude-3-5-sonnet-20241022-v2:0`)
 
-**B) fal.ai (para FLUX - imágenes)**
-- Regístrate en https://fal.ai
-- Obtén tu API key en https://fal.ai/dashboard/keys
-- Plan gratuito disponible para probar
+**B) fal.ai (for FLUX - images)**
+- Sign up at https://fal.ai
+- Get your API key at https://fal.ai/dashboard/keys
+- Free plan available for testing
 
-Puedes configurar las credenciales en:
-- Un archivo `.env`:
+You can configure credentials in:
+- A `.env` file:
   ```
-  AWS_ACCESS_KEY_ID=tu_access_key
-  AWS_SECRET_ACCESS_KEY=tu_secret_key
-  FAL_KEY=tu_fal_api_key
+  AWS_ACCESS_KEY_ID=your_access_key
+  AWS_SECRET_ACCESS_KEY=your_secret_key
+  FAL_KEY=your_fal_api_key
   ```
-- O directamente en la interfaz de Streamlit (sidebar) ← Recomendado para deploy
+- Or directly in the Streamlit interface (sidebar) ← Recommended for deployment
 
-### 3. Ejecutar la aplicación
+### 3. Run the application
 
 ```bash
 streamlit run app.py
 ```
 
-La aplicación se abrirá automáticamente en tu navegador en `http://localhost:8501`
+The application will automatically open in your browser at `http://localhost:8501`
 
-## 📖 Cómo Usar
+## 📖 How to Use
 
-1. **Configura tus credenciales** en el sidebar (si no usas `.env`)
+1. **Configure your credentials** in the sidebar (if not using `.env`)
 
-2. **Describe tu videojuego** en el área de texto principal
-   - Incluye: género, estilo visual, ambientación, temática, referencias
+2. **Describe your video game** in the main text area
+   - Include: genre, visual style, setting, theme, references
 
-3. **Personaliza la generación**:
-   - Número de imágenes por categoría (1-3)
-   - Selecciona qué categorías generar
+3. **Customize generation**:
+   - Number of images per category (1-3)
+   - Select which categories to generate
 
-4. **Haz clic en "Generar Arte Conceptual"**
+4. **Click "Generate Concept Art"**
 
-5. **Espera mientras se generan**:
-   - Primero se crean los prompts con Claude (AWS Bedrock)
-   - Luego se generan las imágenes con FLUX (fal.ai)
-   - Verás las imágenes aparecer en tiempo real
+5. **Wait while generating**:
+   - First, prompts are created with Claude (AWS Bedrock)
+   - Then, images are generated with FLUX (fal.ai)
+   - You'll see images appear in real-time
 
-6. **Resultados guardados en** `outputs/nombre_proyecto/`
+6. **Results saved in** `outputs/project_name/`
 
-## 📁 Estructura de Salida
+## 📁 Output Structure
 
 ```
 outputs/
-└── nombre_proyecto/
+└── project_name/
     ├── main_character/
     │   ├── main_character_1.png
     │   └── main_character_2.png
@@ -90,95 +90,95 @@ outputs/
     └── metadata.json
 ```
 
-## 🎯 Categorías Disponibles
+## 🎯 Available Categories
 
-- **Main Character**: Personaje principal/protagonista
-- **Enemies**: Enemigos y antagonistas
-- **Environments**: Ambientes y escenarios
-- **Weapons**: Armas y equipamiento
-- **Collectibles**: Objetos coleccionables
-- **NPCs**: Personajes no jugables
-- **UI Elements**: Elementos de interfaz de usuario
+- **Main Character**: Main character/protagonist
+- **Enemies**: Enemies and antagonists
+- **Environments**: Environments and scenarios
+- **Weapons**: Weapons and equipment
+- **Collectibles**: Collectible items
+- **NPCs**: Non-playable characters
+- **UI Elements**: User interface elements
 
-## 💡 Ejemplo de Descripción
+## 💡 Description Example
 
 ```
-Juego de acción RPG en tercera persona estilo Dark Souls.
-Ambientado en un mundo de fantasía oscura medieval.
-Castillos góticos, bosques tenebrosos, criaturas monstruosas.
-Estética realista con atmósfera sombría.
-Inspirado en Elden Ring y Bloodborne.
+Third-person action RPG game, Dark Souls style.
+Set in a dark medieval fantasy world.
+Gothic castles, dark forests, monstrous creatures.
+Realistic aesthetic with gloomy atmosphere.
+Inspired by Elden Ring and Bloodborne.
 ```
 
 ## 🔧 Troubleshooting
 
 ### Error: "AccessDeniedException"
-- Verifica que tus credenciales AWS sean correctas
-- Asegúrate de tener acceso a Bedrock en tu región
-- Comprueba que los modelos estén habilitados en la consola de AWS Bedrock
+- Verify your AWS credentials are correct
+- Make sure you have Bedrock access in your region
+- Check that models are enabled in the AWS Bedrock console
 
 ### Error: "Model not found" (AWS)
-- Ve a la consola de AWS Bedrock → Model access
-- Habilita Claude 3.5 Sonnet
-- Espera unos minutos para que se active
+- Go to AWS Bedrock console → Model access
+- Enable Claude 3.5 Sonnet
+- Wait a few minutes for activation
 
-### Error de fal.ai
-- Verifica que tu API key sea correcta
-- Revisa que tengas créditos en fal.ai
-- Prueba con FLUX Schnell (más rápido y barato)
+### fal.ai Error
+- Verify your API key is correct
+- Check that you have credits in fal.ai
+- Try FLUX Schnell (faster and cheaper)
 
-### Las imágenes no se generan bien
-- Prueba FLUX Pro para máxima calidad
-- Ajusta el número de imágenes por categoría
-- Prueba con descripciones más específicas
+### Images don't generate well
+- Try FLUX Pro for maximum quality
+- Adjust the number of images per category
+- Try more specific descriptions
 
-## 🌐 Deploy en Streamlit Cloud
+## 🌐 Deploy to Streamlit Cloud
 
-1. Sube tu código a GitHub (`.env` está en `.gitignore`)
-2. Ve a [share.streamlit.io](https://share.streamlit.io)
-3. Conecta tu repositorio
-4. **IMPORTANTE**: NO agregues secrets en Streamlit Cloud
-5. Los usuarios ingresarán sus propias API keys en la interfaz
-6. Cada usuario paga por su propio uso
-7. Deploy automático completado
+1. Push your code to GitHub (`.env` is in `.gitignore`)
+2. Go to [share.streamlit.io](https://share.streamlit.io)
+3. Connect your repository
+4. **IMPORTANT**: DO NOT add secrets in Streamlit Cloud
+5. Users will enter their own API keys in the interface
+6. Each user pays for their own usage
+7. Automatic deployment completed
 
-## 📊 Costos Estimados
+## 📊 Estimated Costs
 
-**Por generación de prompts:**
+**Per prompt generation:**
 - Claude 3.5 Sonnet (AWS): ~$0.003
 
-**Por imagen generada:**
+**Per generated image:**
 - FLUX Dev (fal.ai): ~$0.03
 - FLUX Pro (fal.ai): ~$0.05
 - FLUX Schnell (fal.ai): ~$0.02
 
-**Ejemplo**: 2 imágenes × 3 categorías con FLUX Dev = 6 imágenes ≈ **$0.18 USD**
+**Example**: 2 images × 3 categories with FLUX Dev = 6 images ≈ **$0.18 USD**
 
-*Más económico y mejor calidad que AWS Titan*
+*More affordable and better quality than AWS Titan*
 
-## 🆚 Ventajas de la v3.0
+## 🆚 v3.0 Advantages
 
-| Aspecto | v2.0 (AWS Titan) | v3.0 (fal.ai FLUX) |
+| Aspect | v2.0 (AWS Titan) | v3.0 (fal.ai FLUX) |
 |---------|------------------|---------------------|
-| Calidad imágenes | Media | Alta/Excelente |
-| Filtros contenido | Muy restrictivos ❌ | Sin filtros ✅ |
-| Velocidad | Media | Rápida (Schnell: ultra rápido) |
-| Costo por imagen | ~$0.04 | $0.02-$0.05 |
-| Modelos disponibles | 3 (Titan/Nova) | 3 FLUX (Dev/Pro/Schnell) |
-| Errores validación | Frecuentes | Ninguno |
+| Image quality | Medium | High/Excellent |
+| Content filters | Very restrictive ❌ | No filters ✅ |
+| Speed | Medium | Fast (Schnell: ultra fast) |
+| Cost per image | ~$0.04 | $0.02-$0.05 |
+| Available models | 3 (Titan/Nova) | 3 FLUX (Dev/Pro/Schnell) |
+| Validation errors | Frequent | None |
 
-## 📝 Licencia
+## 📝 License
 
-Este proyecto es de código abierto. Úsalo libremente para tus proyectos.
+This project is open source. Use it freely for your projects.
 
 ---
 
 **v3.0 - Claude 3.5 Sonnet + FLUX**
 
 ### Changelog v3.0
-- ✨ Migrado de AWS Titan a fal.ai FLUX
-- 🚀 Mejor calidad de imágenes (FLUX supera a Titan)
-- ⚡ Sin filtros restrictivos de contenido de AWS
-- 💰 Costos más competitivos
-- 🎨 3 modelos FLUX: Dev, Pro, Schnell
-- ⚙️ Configuración dual: AWS (prompts) + fal.ai (imágenes)
+- ✨ Migrated from AWS Titan to fal.ai FLUX
+- 🚀 Better image quality (FLUX surpasses Titan)
+- ⚡ No restrictive AWS content filters
+- 💰 More competitive costs
+- 🎨 3 FLUX models: Dev, Pro, Schnell
+- ⚙️ Dual configuration: AWS (prompts) + fal.ai (images)

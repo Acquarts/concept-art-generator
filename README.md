@@ -1,164 +1,172 @@
 # 🎨 Concept Art Generator v3.0
 
-Generador de arte conceptual para videojuegos usando **Claude (prompts) + FLUX (imágenes)** con interfaz web moderna.
+Video game concept art generator using **Claude (prompts) + FLUX (images)** with a modern web interface.
 
-**Versión 3.0**: Migrado de AWS Titan a fal.ai FLUX para mejor calidad y sin filtros restrictivos.
+**Version 3.0**: Migrated from AWS Titan to fal.ai FLUX for better quality and no restrictive filters.
 
-## 🚀 Inicio Rápido
+## 🚀 Quick Start
 
 ```bash
-# 1. Instalar dependencias
+# 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Configurar credenciales (opcional, también puedes hacerlo en la UI)
+# 2. Configure credentials (optional, you can also do it in the UI)
 cp .env.example .env
-# Edita .env con:
-#   - Credenciales AWS (para Claude)
-#   - API Key de fal.ai (para FLUX)
+# Edit .env with:
+#   - AWS credentials (for Claude)
+#   - fal.ai API Key (for FLUX)
 
-# 3. Ejecutar la aplicación
+# 3. Run the application
 streamlit run app.py
 ```
 
-La app se abrirá automáticamente en `http://localhost:8501`
+The app will automatically open at `http://localhost:8501`
 
-## ✨ Características
+## ✨ Features
 
-- **Interfaz Web Moderna**: Streamlit UI intuitiva y responsiva
-- **Mejor Calidad**: FLUX genera imágenes superiores a AWS Titan
-- **Sin Filtros Restrictivos**: No más errores de validación de contenido
-- **Doble IA**:
-  - **Claude 3.5 Sonnet** (AWS Bedrock) para prompts creativos
-  - **FLUX** (via fal.ai) para generar imágenes de alta calidad
-- **Personalizable**: Selecciona categorías y cantidad de imágenes
-- **Visualización en Tiempo Real**: Ve las imágenes mientras se generan
-- **Organización Automática**: Guarda imágenes por categoría con metadata
-- **3 Modelos FLUX**: Dev (balanceado), Pro (máxima calidad), Schnell (ultra rápido)
+- **Modern Web Interface**: Intuitive and responsive Streamlit UI
+- **Better Quality**: FLUX generates superior images compared to AWS Titan
+- **No Restrictive Filters**: No more content validation errors
+- **Dual AI**:
+  - **Claude 3.5 Sonnet** (AWS Bedrock) for creative prompts
+  - **FLUX** (via fal.ai) for high-quality image generation
+- **Customizable**: Select categories and number of images
+- **Real-Time Visualization**: See images as they're generated
+- **Automatic Organization**: Saves images by category with metadata
+- **3 FLUX Models**: Dev (balanced), Pro (maximum quality), Schnell (ultra fast)
 
-## 📋 Requisitos
+## 📋 Requirements
 
 - Python 3.8+
-- **Cuenta de AWS** con acceso a Bedrock:
+- **AWS Account** with Bedrock access:
   - Claude 3.5 Sonnet (inference profile: `us.anthropic.claude-3-5-sonnet-20241022-v2:0`)
-  - Solo para generación de prompts creativos
-- **Cuenta de fal.ai**:
-  - Regístrate en https://fal.ai
-  - Obtén tu API key en https://fal.ai/dashboard/keys
-  - Tienen plan gratuito para probar
+  - Only for creative prompt generation
+- **fal.ai Account**:
+  - Sign up at https://fal.ai
+  - Get your API key at https://fal.ai/dashboard/keys
+  - Free plan available for testing
 
-## 📁 Estructura del Proyecto
+## 📁 Project Structure
 
 ```
-concept-art-agent/
-├── app.py                    # ⭐ Aplicación principal Streamlit
-├── requirements.txt          # Dependencias (4 paquetes)
-├── .env.example             # Template de configuración
-├── .env                     # Tu configuración (crear)
-├── README.md                # Este archivo
-├── README_STREAMLIT.md      # Documentación detallada
-├── AWS_BEDROCK_SETUP.md     # Guía de configuración AWS
-└── outputs/                 # Imágenes generadas
-    └── proyecto_nombre/
+concept-art-generator/
+├── app.py                    # ⭐ Main Streamlit application
+├── requirements.txt          # Dependencies (6 packages)
+├── .env.example             # Configuration template
+├── .env                     # Your configuration (create this)
+├── README.md                # This file
+├── README_STREAMLIT.md      # Detailed usage guide
+├── AWS_BEDROCK_SETUP.md     # AWS configuration guide
+└── outputs/                 # Generated images
+    └── project_name/
         ├── main_character/
         ├── enemies/
         ├── environments/
         └── ...
 ```
 
-## 🎯 Categorías de Arte
+## 🎯 Art Categories
 
-- **Main Character**: Personaje principal
-- **Enemies**: Enemigos y antagonistas
-- **Environments**: Ambientes y escenarios
-- **Weapons**: Armas y equipamiento
-- **Collectibles**: Objetos coleccionables
-- **NPCs**: Personajes no jugables
-- **UI Elements**: Elementos de interfaz
+- **Main Character**: Main protagonist
+- **Enemies**: Enemies and antagonists
+- **Environments**: Environments and scenarios
+- **Weapons**: Weapons and equipment
+- **Collectibles**: Collectible items
+- **NPCs**: Non-playable characters
+- **UI Elements**: Interface elements
 
-## 💡 Ejemplo de Uso
+## 💡 Usage Example
 
-1. Describe tu videojuego:
+1. Describe your video game:
    ```
-   Juego de acción RPG en tercera persona estilo Dark Souls.
-   Ambientado en un mundo de fantasía oscura medieval.
-   Castillos góticos, bosques tenebrosos, criaturas monstruosas.
-   Estética realista con atmósfera sombría.
+   Third-person action RPG game, Dark Souls style.
+   Set in a dark medieval fantasy world.
+   Gothic castles, dark forests, monstrous creatures.
+   Realistic aesthetic with gloomy atmosphere.
    ```
 
-2. Selecciona categorías (ej: Personaje, Enemigos, Ambientes)
+2. Select categories (e.g., Character, Enemies, Environments)
 
-3. Ajusta cantidad de imágenes por categoría (1-3)
+3. Adjust number of images per category (1-3)
 
-4. Haz clic en "Generar Arte Conceptual"
+4. Click "Generate Concept Art"
 
-5. Las imágenes se generarán y guardarán automáticamente
+5. Images will be generated and saved automatically
 
-## 📊 Costos Estimados
+## 📊 Estimated Costs
 
-- **Claude 3.5 Sonnet** (AWS): ~$0.003 por generación de prompts
-- **FLUX Dev** (fal.ai): ~$0.03 por imagen
-- **FLUX Pro** (fal.ai): ~$0.05 por imagen
-- **FLUX Schnell** (fal.ai): ~$0.02 por imagen
+- **Claude 3.5 Sonnet** (AWS): ~$0.003 per prompt generation
+- **FLUX Dev** (fal.ai): ~$0.03 per image
+- **FLUX Pro** (fal.ai): ~$0.05 per image
+- **FLUX Schnell** (fal.ai): ~$0.02 per image
 
-**Ejemplo**: 2 imágenes × 3 categorías = 6 imágenes con FLUX Dev ≈ **$0.18 USD**
+**Example**: 2 images × 3 categories = 6 images with FLUX Dev ≈ **$0.18 USD**
 
-*Más económico y mejor calidad que AWS Titan*
+*More affordable and better quality than AWS Titan*
 
-## 🌐 Deploy en Streamlit Cloud
+## 🌐 Deploy to Streamlit Cloud
 
-1. Sube el proyecto a GitHub (asegúrate de que `.env` está en `.gitignore`)
-2. Conecta en [share.streamlit.io](https://share.streamlit.io)
-3. **IMPORTANTE**: NO agregues tus credenciales en secrets
-4. Los usuarios deberán ingresar sus propias API keys en la interfaz
-5. Cada usuario usa sus propias credenciales (AWS + fal.ai)
-6. ¡Deploy listo! Cada persona paga por su propio uso
+1. Push the project to GitHub (make sure `.env` is in `.gitignore`)
+2. Connect at [share.streamlit.io](https://share.streamlit.io)
+3. **IMPORTANT**: DO NOT add your credentials to secrets
+4. Users must enter their own API keys in the interface
+5. Each user uses their own credentials (AWS + fal.ai)
+6. Deploy ready! Each person pays for their own usage
 
-## 🔧 Configuración AWS Bedrock
+## 🔧 AWS Bedrock Configuration
 
-Ver [AWS_BEDROCK_SETUP.md](AWS_BEDROCK_SETUP.md) para instrucciones detalladas sobre:
-- Crear cuenta AWS
-- Habilitar Bedrock
-- Activar modelos
-- Configurar credenciales
+See [AWS_BEDROCK_SETUP.md](AWS_BEDROCK_SETUP.md) for detailed instructions on:
+- Creating AWS account
+- Enabling Bedrock
+- Activating models
+- Configuring credentials
 
-## 📖 Documentación
+## 📖 Documentation
 
-- **[README_STREAMLIT.md](README_STREAMLIT.md)**: Guía completa de uso
-- **[AWS_BEDROCK_SETUP.md](AWS_BEDROCK_SETUP.md)**: Setup de AWS Bedrock
+- **[README_STREAMLIT.md](README_STREAMLIT.md)**: Complete usage guide
+- **[AWS_BEDROCK_SETUP.md](AWS_BEDROCK_SETUP.md)**: AWS Bedrock setup
 
 ## 🛠️ Troubleshooting
 
 ### Error: "AccessDeniedException" (AWS)
-- Verifica credenciales AWS en el sidebar
-- Confirma acceso a Bedrock habilitado en tu cuenta
-- Usa región us-east-1 (recomendada)
+- Verify AWS credentials in the sidebar
+- Confirm Bedrock access is enabled in your account
+- Use us-east-1 region (recommended)
 
 ### Error: "Model not found" (AWS)
-- Ve a AWS Console → Bedrock → Model access
-- Habilita Claude 3.5 Sonnet
-- Espera unos minutos
+- Go to AWS Console → Bedrock → Model access
+- Enable Claude 3.5 Sonnet
+- Wait a few minutes
 
-### Error de fal.ai
-- Verifica que tu API key de fal.ai sea correcta
-- Revisa que tengas créditos en tu cuenta de fal.ai
-- Prueba con FLUX Schnell (más rápido y económico)
+### fal.ai Error
+- Verify your fal.ai API key is correct
+- Check that you have credits in your fal.ai account
+- Try FLUX Schnell (faster and more economical)
 
-### Las imágenes no se ven bien
-- Describe tu juego con más detalle
-- Prueba FLUX Pro para máxima calidad
-- Ajusta el número de imágenes
+### Images don't look good
+- Describe your game in more detail
+- Try FLUX Pro for maximum quality
+- Adjust the number of images
 
-## 📄 Licencia
+## 📄 License
 
-Apache 2.0 License - Úsalo libremente
+Apache 2.0 License - Use it freely
+
+## 🙏 Acknowledgments
+
+Built with:
+- [Streamlit](https://streamlit.io) - Web interface
+- [Claude 3.5 Sonnet](https://www.anthropic.com/claude) - Creative prompt generation
+- [FLUX](https://fal.ai/models/flux) - High-quality image generation
+- [AWS Bedrock](https://aws.amazon.com/bedrock/) - Claude API access
 
 ---
 
-**v3.0 - Desarrollado con ❤️ usando Streamlit, Claude 3.5 Sonnet y FLUX**
+**v3.0 - Built with ❤️ using Streamlit, Claude 3.5 Sonnet, and FLUX**
 
 ### Changelog v3.0
-- ✨ Migrado de AWS Titan a fal.ai FLUX
-- 🚀 Mejor calidad de imágenes
-- ⚡ Sin filtros restrictivos de contenido
-- 💰 Costos más competitivos
-- 🎨 3 modelos FLUX disponibles (Dev, Pro, Schnell)
+- ✨ Migrated from AWS Titan to fal.ai FLUX
+- 🚀 Better image quality
+- ⚡ No restrictive content filters
+- 💰 More competitive costs
+- 🎨 3 FLUX models available (Dev, Pro, Schnell)
