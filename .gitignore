@@ -1,0 +1,27 @@
+# Environment & Credentials
+.env
+venv/
+env/
+*.pyc
+__pycache__/
+
+# Outputs & Generated Images
+outputs/
+
+# Streamlit
+.streamlit/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+*.egg-info/
+dist/
+build/
